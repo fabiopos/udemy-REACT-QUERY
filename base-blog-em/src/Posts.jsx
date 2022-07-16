@@ -32,6 +32,7 @@ export function Posts() {
     () => fetchPosts({ page: currentPage }),
     {
       staleTime: 2 * 1000,
+      keepPreviousData: true,
     }
   );
 
