@@ -1,3 +1,4 @@
+import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { Species } from "./Species";
 
