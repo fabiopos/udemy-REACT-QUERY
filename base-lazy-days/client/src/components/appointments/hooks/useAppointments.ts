@@ -34,14 +34,11 @@ interface UseAppointments {
   setShowAll: Dispatch<SetStateAction<boolean>>;
 }
 
-// The purpose of this hook:
-//   1. track the current month/year (aka monthYear) selected by the user
-//     1a. provide a way to update state
-//   2. return the appointments for that particular monthYear
-//     2a. return in AppointmentDateMap format (appointment arrays indexed by day of month)
-//     2b. prefetch the appointments for adjacent monthYears
-//   3. track the state of the filter (all appointments / available appointments)
-//     3a. return the only the applicable appointments for the current monthYear
+const commonOptions = {
+  staleTime: 0,
+  cacheTime: 300 * 1000, // 5 mins
+};
+
 export function useAppointments(): UseAppointments {
   /** ****************** START 1: monthYear state *********************** */
   // get the monthYear for the current date (for default monthYear state)
@@ -70,10 +67,6 @@ export function useAppointments(): UseAppointments {
     user,
   ]);
 
-  /** ****************** END 2: filter appointments  ******************** */
-  /** ****************** START 3: useQuery  ***************************** */
-  // useQuery call for appointments for the current monthYear
-
   const queryClient = useQueryClient();
   const fallback = {};
   const { data: appointments = fallback } = useQuery(
@@ -81,6 +74,11 @@ export function useAppointments(): UseAppointments {
     () => getAppointments(monthYear.year, monthYear.month),
     {
       select: showAll ? undefined : selectFn,
+      ...commonOptions,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      refetchInterval: 60 * 1000,
     },
   );
 
@@ -90,6 +88,9 @@ export function useAppointments(): UseAppointments {
       queryClient.prefetchQuery(
         [queryKeys.appointments, monthYear.year, nextMonth.month],
         () => getAppointments(monthYear.year, nextMonth.month),
+        {
+          ...commonOptions,
+        },
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
