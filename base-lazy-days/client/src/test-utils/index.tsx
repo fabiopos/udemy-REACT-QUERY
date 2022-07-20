@@ -1,17 +1,29 @@
 /* eslint-disable no-console */
 import { render, RenderResult } from '@testing-library/react';
 import { ReactElement } from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import {
+  QueryClient,
+  QueryClientConfig,
+  QueryClientProvider,
+  setLogger,
+} from 'react-query';
 
 import { defaultQueryClientOptions } from '../react-query/queryClient';
 
-const generateTestQueryClient = () => {
+export const getDefaultOptions = (): QueryClientConfig => {
   const { defaultOptions: baseOptions, ...rest } = defaultQueryClientOptions;
   const defaultOptions = {
     ...baseOptions,
     queries: { ...baseOptions.queries, retry: false },
   };
-  return new QueryClient({ defaultOptions, ...rest });
+  return { defaultOptions, ...rest };
+};
+
+export const generateTestQueryClient = (
+  userOptions: QueryClientConfig,
+): QueryClient => {
+  const options = userOptions ?? getDefaultOptions();
+  return new QueryClient(options);
 };
 // from https://tkdodo.eu/blog/testing-react-query#for-custom-hooks
 
