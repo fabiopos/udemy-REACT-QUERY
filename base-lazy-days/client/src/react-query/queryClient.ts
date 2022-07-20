@@ -1,5 +1,5 @@
 import { createStandaloneToast } from '@chakra-ui/react';
-import { QueryClient } from 'react-query';
+import { QueryClient, QueryClientConfig } from 'react-query';
 
 import { theme } from '../theme';
 
@@ -16,8 +16,7 @@ function queryErrorHandler(error: unknown): void {
   toast({ id, title, status: 'error', variant: 'subtle', isClosable: true });
 }
 
-// to satisfy typescript until this file has uncommented contents
-export const queryClient = new QueryClient({
+export const defaultQueryClientOptions: QueryClientConfig = {
   defaultOptions: {
     queries: {
       onError: queryErrorHandler,
@@ -31,4 +30,6 @@ export const queryClient = new QueryClient({
       onError: queryErrorHandler,
     },
   },
-});
+};
+// to satisfy typescript until this file has uncommented contents
+export const queryClient = new QueryClient(defaultQueryClientOptions);
