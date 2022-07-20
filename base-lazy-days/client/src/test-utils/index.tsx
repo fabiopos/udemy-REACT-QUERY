@@ -20,7 +20,7 @@ export const getDefaultOptions = (): QueryClientConfig => {
 };
 
 export const generateTestQueryClient = (
-  userOptions: QueryClientConfig,
+  userOptions?: QueryClientConfig,
 ): QueryClient => {
   const options = userOptions ?? getDefaultOptions();
   return new QueryClient(options);
